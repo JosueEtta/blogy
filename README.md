@@ -1,58 +1,342 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Blogy
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Blogy is a simple blog application built with **Laravel 13**. It allows users to create an account, sign in, and manage blog posts from a single web interface.
 
-## About Laravel
+The project is intended as a straightforward Laravel application for learning and demonstrating core web-development concepts such as authentication, Eloquent relationships, database migrations, validation, CRUD operations, Blade views, and Vite-based frontend assets.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- User registration and authentication
+- Secure sign-in and sign-out
+- Create blog posts
+- View all posts
+- Edit existing posts
+- Delete posts
+- Associate each post with its author
+- Server-side validation for account and post forms
+- Session-based authentication
+- Toast-style success and error feedback
+- Responsive UI built with Tailwind CSS and DaisyUI
+- Database migrations and seeders for quickly setting up sample data
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## How the application works
 
-## Learning Laravel
+After opening the application:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Guests are sent to the **Sign In** page.
+2. New users can create an account from the **Sign Up** page.
+3. After signing in, users are taken to the home page.
+4. Authenticated users can create a post by providing a title and content.
+5. Existing posts are displayed with their author and creation date.
+6. Posts can be edited or deleted from the home page.
+7. Logging out ends the current authenticated session and returns the user to the Sign In page.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Data model
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+The application currently has two main application models:
 
-## Agentic Development
+- **User** — stores account information such as name, email, and password.
+- **Post** — stores a post's title and content and belongs to a user through `user_id`.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+The relationship is:
 
-```bash
-composer require laravel/boost --dev
+```
+User
+ └── hasMany Posts
 
-php artisan boost:install
+Post
+ └── belongsTo User
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Deleting a user also deletes their posts through the database foreign-key cascade.
+
+## Tech stack
+
+- **PHP:** 8.3+
+- **Framework:** Laravel 13
+- **Database:** SQLite by default
+- **Frontend:** Blade
+- **CSS:** Tailwind CSS 4
+- **UI components:** DaisyUI
+- **Asset bundler:** Vite
+- **Package managers:** Composer and npm
+
+## Requirements
+
+Before installing Blogy, make sure you have:
+
+- PHP 8.3 or newer
+- Composer
+- Node.js and npm
+- A database supported by your Laravel configuration
+
+The repository is configured to use **SQLite by default**, so you do not need MySQL for the standard local setup.
+
+## Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/JosueEtta/blogy.git
+cd blogy
+```
+
+### 2. Install PHP dependencies
+
+```bash
+composer install
+```
+
+### 3. Create the environment file
+
+Copy the example environment file:
+
+**macOS/Linux/Git Bash:**
+
+```bash
+cp .env.example .env
+```
+
+**Windows PowerShell:**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+### 4. Generate the application key
+
+```bash
+php artisan key:generate
+```
+
+### 5. Create the SQLite database
+
+The default `.env.example` uses SQLite. Create the database file before running the migrations:
+
+```bash
+php -r "touch('database/database.sqlite');"
+```
+
+If the file already exists, this command is harmless.
+
+### 6. Run the database migrations
+
+```bash
+php artisan migrate
+```
+
+### 7. Install frontend dependencies
+
+```bash
+npm install
+```
+
+### 8. Build the frontend assets
+
+For a production-style build:
+
+```bash
+npm run build
+```
+
+For local development with Vite's file watcher, use:
+
+```bash
+npm run dev
+```
+
+Keep the Vite development process running while developing so frontend changes are rebuilt automatically.
+
+### 9. Start the Laravel development server
+
+In another terminal:
+
+```bash
+php artisan serve
+```
+
+The application will normally be available at:
+
+```
+http://localhost:8000
+```
+
+## Quick setup
+
+The project already defines a Composer setup script that installs dependencies, creates the environment file when necessary, generates the application key, runs migrations, installs npm dependencies, and builds the frontend.
+
+After creating the SQLite database file, you can use:
+
+```bash
+composer run setup
+```
+
+Then start the application with:
+
+```bash
+php artisan serve
+```
+
+For frontend development, run `npm run dev` in a separate terminal.
+
+## Optional: seed sample data
+
+The database seeder creates **5 users**, with **3 posts for each user**.
+
+To populate the database with sample data:
+
+```bash
+php artisan db:seed
+```
+
+To reset the database and recreate it with the sample data:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+> **Note:** `migrate:fresh --seed` deletes all existing database tables and their data. Use it only when you are comfortable resetting the local database.
+
+## Development commands
+
+### Start Laravel
+
+```bash
+php artisan serve
+```
+
+### Start Vite
+
+```bash
+npm run dev
+```
+
+### Build frontend assets
+
+```bash
+npm run build
+```
+
+### Run migrations
+
+```bash
+php artisan migrate
+```
+
+### Seed the database
+
+```bash
+php artisan db:seed
+```
+
+### Run tests
+
+```php
+php artisan test
+```
+
+### Clear Laravel caches
+
+If you encounter unexpected configuration or view behaviour:
+
+```bash
+php artisan optimize:clear
+```
+
+## Project structure
+
+The most important directories are:
+
+```
+blogy/
+├── app/
+│   ├── Http/
+│   │   └── Controllers/
+│   └── Models/
+├── database/
+│   ├── factories/
+│   ├── migrations/
+│   └── seeders/
+├── public/
+├── resources/
+│   └── views/
+├── routes/
+│   └── web.php
+├── tests/
+├── .env.example
+├── composer.json
+├── package.json
+└── vite.config.js
+```
+
+### Important application files
+
+- `routes/web.php` — defines the application's web routes.
+- `app/Http/Controllers/AuthController.php` — handles registration, sign-in, and logout.
+- `app/Http/Controllers/PostController.php` — handles post creation, listing, editing, updating, and deletion.
+- `app/Models/User.php` — represents application users and their posts.
+- `app/Models/Post.php` — represents blog posts and their author relationship.
+- `resources/views/home.blade.php` — main authenticated blog interface.
+- `resources/views/auth/signup.blade.php` — registration page.
+- `resources/views/auth/signin.blade.php` — sign-in page.
+- `database/migrations/` — contains the database schema.
+- `database/seeders/DatabaseSeeder.php` — creates sample users and posts.
+
+## Database configuration
+
+By default, Blogy uses SQLite:
+
+```env
+DB_CONNECTION=sqlite
+```
+
+If you prefer another Laravel-supported database, update the `DB_*` variables in your `.env` file and make sure the database exists before running:
+
+```bash
+php artisan migrate
+```
+
+Do not commit your `.env` file because it may contain local configuration and credentials.
+
+## Authentication
+
+Blogy uses Laravel's built-in authentication facilities.
+
+### Sign up
+
+Users provide:
+
+- Name
+- Email
+- Password
+- Password confirmation
+
+The email must be unique, and passwords must contain at least 8 characters.
+
+### Sign in
+
+Users authenticate with their email and password. Laravel regenerates the session after a successful login.
+
+### Sign out
+
+Signing out invalidates the session and regenerates the CSRF token before returning the user to the sign-in page.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Contributions and improvements are welcome.
 
-## Code of Conduct
+A typical workflow is:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git checkout -b feature/my-change
+```
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Make your changes, test them, and then create a pull request describing what was changed.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced under the MIT License.
+
+---
+
+Built with Laravel, Blade, Tailwind CSS, and DaisyUI.
